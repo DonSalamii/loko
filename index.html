@@ -1,1123 +1,272 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#020906">
-  <meta name='impact-site-verification' value='01b5643b-6bf6-4deb-869d-8ba319220397'>
-  <meta name="description" content="LOKOOO — Szczecin po Twojemu. Odkrywaj nieoczywiste miejsca, planuj wieczory i poznaj ideę prywatnego syndykatu miejskiego.">
-  <title>LOKOOO — Miasto ma swój wewnętrzny krąg.</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #020906;
-      --surface: #061A12;
-      --surface-elevated: #0B251B;
-      --gold: #CDAD6A;
-      --gold-light: #F3E5C8;
-      --gold-glow: rgba(205, 173, 106, 0.35);
-      --emerald: #34D399;
-      --emerald-glow: rgba(52, 211, 153, 0.4);
-      --text: #F6F4EE;
-      --muted: #8FA89B;
-      --line: rgba(205, 173, 106, 0.18);
-      --line-bright: rgba(205, 173, 106, 0.45);
-      --serif: "Cinzel", Georgia, serif;
-      --sans: "Plus Jakarta Sans", -apple-system, sans-serif;
-      --radius: 20px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
-      min-height: 100vh;
-    }
-
-    /* Tło z ambientną poświatą */
-    .ambient-glow {
-      position: fixed;
-      pointer-events: none;
-      z-index: 0;
-      inset: 0;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(16, 60, 42, 0.35) 0%, transparent 45%),
-        radial-gradient(circle at 85% 60%, rgba(205, 173, 106, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 90%, rgba(6, 32, 22, 0.5) 0%, transparent 60%);
-    }
-
-    /* Siatka geometryczna */
-    .ambient-grid {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      background-image:
-        linear-gradient(rgba(205, 173, 106, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(205, 173, 106, 0.03) 1px, transparent 1px);
-      background-size: 64px 64px;
-      mask-image: radial-gradient(circle at 50% 40%, #000 30%, transparent 80%);
-    }
-
-    /* Spotlight kursor dla desktopu */
-    .spotlight {
-      position: fixed;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(205, 173, 106, 0.06), transparent 60%);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      transition: opacity 0.5s;
-    }
-
-    .container {
-      width: min(1200px, calc(100% - 48px));
-      margin-inline: auto;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Header */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--line);
-      background: rgba(2, 9, 6, 0.75);
-    }
-    .nav {
-      height: 84px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-      color: inherit;
-    }
-    .monogram {
-      width: 44px;
-      height: 44px;
-      border: 1px solid var(--gold);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-family: var(--serif);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--gold-light);
-      background: rgba(6, 26, 18, 0.9);
-      box-shadow: 0 0 20px var(--gold-glow);
-    }
-    .brand-name {
-      font-family: var(--serif);
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      background: linear-gradient(135deg, #FFFFFF 30%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-tag {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--muted);
-      border-left: 1px solid var(--line);
-      padding-left: 14px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .chapter-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--gold-light);
-      letter-spacing: 1px;
-      padding: 6px 14px;
-      background: rgba(205, 173, 106, 0.08);
-      border: 1px solid var(--line);
-      border-radius: 30px;
-    }
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 10px var(--emerald);
-      animation: pulse 2s infinite ease-in-out;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.9); }
-      50% { opacity: 1; transform: scale(1.3); }
-    }
-    .btn-header {
-      padding: 10px 20px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      border-radius: 12px;
-      border: 1px solid var(--gold);
-      background: linear-gradient(135deg, rgba(205, 173, 106, 0.2), rgba(205, 173, 106, 0.05));
-      color: var(--gold-light);
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.25s;
-    }
-    .btn-header:hover {
-      background: var(--gold);
-      color: #020906;
-      box-shadow: 0 0 25px var(--gold-glow);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 80px 0 100px;
-      position: relative;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      align-items: center;
-      gap: 60px;
-    }
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 700;
-      margin-bottom: 24px;
-      padding: 6px 16px;
-      border-radius: 30px;
-      border: 1px solid var(--line);
-      background: rgba(6, 26, 18, 0.6);
-    }
-    h1 {
-      font-family: var(--serif);
-      font-size: clamp(40px, 5.2vw, 70px);
-      line-height: 1.1;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 24px;
-    }
-    h1 span.highlight {
-      display: block;
-      background: linear-gradient(135deg, #FFFFFF 10%, var(--gold-light) 60%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero-desc {
-      font-size: 16px;
-      color: var(--muted);
-      line-height: 1.8;
-      max-width: 480px;
-      margin-bottom: 36px;
-      font-weight: 400;
-    }
-
-    /* Formularz Zapisu */
-    .signup-card {
-      background: rgba(6, 26, 18, 0.85);
-      border: 1px solid var(--line-bright);
-      border-radius: 20px;
-      padding: 8px 8px 8px 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      max-width: 500px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(205, 173, 106, 0.08);
-      transition: border-color 0.3s;
-    }
-    .signup-card:focus-within {
-      border-color: var(--gold);
-      box-shadow: 0 0 35px var(--gold-glow);
-    }
-    .signup-card input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
-    }
-    .signup-card input::placeholder {
-      color: #557567;
-    }
-    .btn-claim {
-      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
-      color: #020906;
-      border: none;
-      padding: 14px 26px;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.25s;
-      white-space: nowrap;
-    }
-    .btn-claim:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px var(--gold-glow);
-    }
-
-    .status-msg {
-      margin-top: 14px;
-      font-size: 12px;
-      min-height: 20px;
-      color: var(--emerald);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .availability-box {
-      margin-top: 36px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-    }
-    .avail-number {
-      font-family: var(--serif);
-      font-size: 44px;
-      font-weight: 700;
-      color: var(--gold-light);
-      line-height: 1;
-    }
-    .avail-text {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .avail-text strong {
-      color: var(--text);
-      font-weight: 600;
-    }
-    .avail-progress {
-      width: 140px;
-      height: 3px;
-      background: rgba(205, 173, 106, 0.15);
-      border-radius: 3px;
-      margin-top: 6px;
-      overflow: hidden;
-    }
-    .avail-progress-fill {
-      width: 47%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--emerald));
-    }
-
-    /* INTERAKTYWNY TELEFON 3D */
-    .phone-stage {
-      position: relative;
-      display: grid;
-      place-items: center;
-      min-height: 640px;
-      perspective: 1200px;
-    }
-    .phone-halo {
-      position: absolute;
-      width: 460px;
-      height: 460px;
-      border-radius: 50%;
-      border: 1px dashed rgba(205, 173, 106, 0.15);
-      animation: spin 60s linear infinite;
-    }
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-    .phone-halo::after {
-      content: "";
-      position: absolute;
-      inset: -25px;
-      border-radius: 50%;
-      border: 1px solid rgba(205, 173, 106, 0.06);
-    }
-
-    .phone-device {
-      width: 300px;
-      height: 610px;
-      background: #04120B;
-      border: 7px solid #14281E;
-      border-radius: 46px;
-      position: relative;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(205, 173, 106, 0.4),
-        0 40px 100px rgba(0, 0, 0, 0.9),
-        0 0 40px rgba(52, 211, 153, 0.15);
-      transform: rotate(-4deg);
-      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      cursor: pointer;
-    }
-    .phone-device:hover {
-      transform: rotate(0deg) scale(1.02);
-    }
-
-    /* Ekran Telefonu */
-    .phone-screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 14px 16px 18px;
-    }
-    .phone-island {
-      width: 84px;
-      height: 22px;
-      background: #000;
-      border-radius: 20px;
-      margin: 0 auto 12px;
-    }
-    .phone-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .phone-app-logo {
-      font-family: var(--serif);
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--gold-light);
-      letter-spacing: 1px;
-    }
-    .phone-badge {
-      font-size: 9px;
-      color: var(--emerald);
-      background: rgba(52, 211, 153, 0.12);
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-weight: 700;
-    }
-
-    /* Interaktywna Mapa Szczecina */
-    .phone-map-container {
-      position: relative;
-      flex: 1;
-      background: #082117;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .phone-map-svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Interaktywne pinezki miejsc */
-    .map-hotspot {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: rgba(6, 26, 18, 0.9);
-      border: 1px solid var(--gold);
-      display: grid;
-      place-items: center;
-      color: var(--gold-light);
-      font-size: 11px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-      transition: all 0.25s;
-    }
-    .map-hotspot:hover, .map-hotspot.active {
-      background: var(--gold);
-      color: #020906;
-      transform: scale(1.18);
-      box-shadow: 0 0 20px var(--gold-glow);
-    }
-    .hs-1 { top: 28%; left: 24%; }
-    .hs-2 { top: 48%; left: 56%; }
-    .hs-3 { top: 68%; left: 32%; }
-
-    /* Karta aktywnego lokalu na telefonie */
-    .phone-venue-card {
-      background: rgba(4, 18, 12, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--line-bright);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-    }
-    .pvc-tag {
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--emerald);
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .pvc-title {
-      font-family: var(--serif);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .pvc-desc {
-      font-size: 10px;
-      color: var(--muted);
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-    .pvc-perk {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9px;
-      color: var(--gold-light);
-      background: rgba(205, 173, 106, 0.12);
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(205, 173, 106, 0.25);
-    }
-
-    /* Dolny dock telefonu */
-    .phone-dock {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding-top: 10px;
-      border-top: 1px solid rgba(205, 173, 106, 0.12);
-      font-size: 9px;
-      color: var(--muted);
-    }
-    .dock-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .dock-btn.active {
-      color: var(--gold-light);
-      font-weight: 700;
-    }
-
-    /* Pływająca karta przy telefonie */
-    .floating-syndicate-badge {
-      position: absolute;
-      right: -24px;
-      bottom: 80px;
-      background: rgba(8, 30, 21, 0.92);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--gold);
-      border-radius: 16px;
-      padding: 16px 20px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--gold-glow);
-      max-width: 220px;
-      transform: rotate(4deg);
-      z-index: 10;
-    }
-    .fsb-eyebrow {
-      font-size: 8px;
-      letter-spacing: 2px;
-      color: var(--gold);
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .fsb-title {
-      font-family: var(--serif);
-      font-size: 15px;
-      color: var(--text);
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .fsb-sub {
-      font-size: 10px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    /* Bento Grid Sekcja */
-    .bento-section {
-      padding: 100px 0;
-      border-top: 1px solid var(--line);
-    }
-    .section-header {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 60px;
-    }
-    .sec-eyebrow {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    h2 {
-      font-family: var(--serif);
-      font-size: clamp(30px, 3.8vw, 48px);
-      letter-spacing: -0.01em;
-      margin-bottom: 16px;
-    }
-    .sec-desc {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .bento-card {
-      background: linear-gradient(145deg, rgba(12, 38, 27, 0.7), rgba(4, 18, 12, 0.7));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 36px 30px;
-      backdrop-filter: blur(14px);
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .bento-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--gold);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(205, 173, 106, 0.12);
-    }
-    .bento-card::after {
-      content: "";
-      position: absolute;
-      top: -50px;
-      right: -50px;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, var(--gold-glow), transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .bento-num {
-      font-family: var(--serif);
-      font-size: 13px;
-      color: var(--gold);
-      letter-spacing: 2px;
-      margin-bottom: 24px;
-      font-weight: 700;
-    }
-    .bento-title {
-      font-family: var(--serif);
-      font-size: 22px;
-      margin-bottom: 14px;
-      color: var(--text);
-      font-weight: 700;
-    }
-    .bento-p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    /* FAQ */
-    .faq-section {
-      padding: 90px 0;
-      border-top: 1px solid var(--line);
-    }
-    .faq-grid {
-      display: grid;
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 60px;
-    }
-    details {
-      border-bottom: 1px solid var(--line);
-      padding: 20px 0;
-    }
-    details:first-of-type {
-      border-top: 1px solid var(--line);
-    }
-    summary {
-      cursor: pointer;
-      list-style: none;
-      font-size: 15px;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--text);
-    }
-    summary::-webkit-details-marker { display: none; }
-    summary::after {
-      content: "+";
-      font-size: 24px;
-      color: var(--gold);
-      font-weight: 300;
-      transition: transform 0.2s;
-    }
-    details[open] summary::after {
-      content: "−";
-      transform: rotate(90deg);
-    }
-    details p {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--line);
-      background: #010604;
-      padding: 50px 0 36px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    .footer-coords {
-      font-family: monospace;
-      letter-spacing: 2px;
-      color: var(--gold);
-      font-size: 10px;
-    }
-    .footer-legal-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 24px;
-      border-top: 1px solid rgba(205, 173, 106, 0.1);
-    }
-    .legal-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 11px;
-      margin-right: 20px;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .legal-btn:hover {
-      color: var(--gold-light);
-    }
-
-    /* Dialog Modal */
-    dialog {
-      width: min(580px, calc(100% - 32px));
-      max-height: 85vh;
-      background: #051810;
-      border: 1px solid var(--gold);
-      border-radius: 24px;
-      padding: 36px;
-      color: var(--text);
-      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.95), 0 0 40px var(--gold-glow);
-      margin: auto;
-    }
-    dialog::backdrop {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-    }
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 16px;
-    }
-    .modal-head h3 {
-      font-family: var(--serif);
-      font-size: 20px;
-      color: var(--gold-light);
-    }
-    .btn-close-modal {
-      background: transparent;
-      border: none;
-      color: var(--gold);
-      font-size: 26px;
-      cursor: pointer;
-    }
-    .modal-body p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.8;
-      margin-bottom: 14px;
-    }
-
-    /* RWD */
-    @media (max-width: 960px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-      .phone-stage { order: 2; min-height: 580px; }
-      .bento-grid { grid-template-columns: 1fr; }
-      .faq-grid { grid-template-columns: 1fr; gap: 30px; }
-      .floating-syndicate-badge { right: 0; bottom: 40px; }
-    }
-    @media (max-width: 600px) {
-      .nav-tag, .chapter-pill { display: none; }
-      .signup-card { flex-direction: column; padding: 14px; }
-      .signup-card input { width: 100%; min-height: 44px; text-align: center; }
-      .btn-claim { width: 100%; }
-      .footer-top, .footer-legal-bar { flex-direction: column; gap: 16px; text-align: center; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#010805">
+<meta name="description" content="LOKOOO — Private Urban Syndicate & Society. Szczecin, Chapter 01.">
+<meta name='impact-site-verification' value='01b5643b-6bf6-4deb-869d-8ba319220397'>
+<title>LOKOOO — Wewnętrzny krąg miasta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--ink:#010805;--green:#03120B;--panel:#061A12;--gold:#CDAD6A;--light:#F7E9C8;--pulse:#34D399;--white:#F7F5EE;--muted:#8CA496;--line:rgba(205,173,106,.21);--serif:'Cinzel',Georgia,serif;--sans:'Plus Jakarta Sans',Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:35px}body{margin:0;background:var(--ink);color:var(--white);font:400 14px/1.7 var(--sans);-webkit-font-smoothing:antialiased}body.locked{overflow:hidden}button,input{font:inherit}button,a,input,summary{-webkit-tap-highlight-color:transparent}button,a{touch-action:manipulation}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--pulse);outline-offset:5px}button:disabled{cursor:wait;opacity:.65}button{color:inherit}h1,h2,h3,p{margin-top:0}h1,h2,h3{text-wrap:balance}::selection{background:var(--gold);color:var(--ink)}[hidden]{display:none!important}.container{width:min(1200px,calc(100% - 80px));margin-inline:auto}.eyebrow{font-size:9px;font-weight:600;letter-spacing:.23em;text-transform:uppercase;color:var(--gold)}.muted{color:var(--muted)}.icon{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round}.skip{position:fixed;top:-100px;left:20px;z-index:100;background:var(--gold);color:var(--ink);padding:12px 20px}.skip:focus{top:16px}.button{display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:48px;padding:13px 20px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--light);font-size:11px;font-weight:600;transition:transform .3s,border-color .3s;position:relative;overflow:hidden}.button:hover{border-color:var(--gold)}.gold{background:linear-gradient(110deg,#CDAD6A,#F7E9C8 48%,#CDAD6A);background-size:200% 100%;border:0;color:var(--ink);transition:background-position .6s,transform .3s}.gold:hover{background-position:100% 0;transform:translateY(-2px)}.text-link{border:0;background:none;padding:0;color:var(--light);font:inherit;text-decoration:underline;text-underline-offset:4px}.arrow{font-size:21px;font-weight:400;line-height:1}.dot{display:inline-block;width:5px;height:5px;background:var(--pulse);border-radius:50%;box-shadow:0 0 12px #34d39970;flex-shrink:0}.pulse{animation:pulse 3s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 5px #34d3990a,0 0 18px #34d39966}}
+/* Ambient light: the native cursor remains available. */
+#spotlight{position:fixed;left:0;top:0;width:650px;height:650px;pointer-events:none;z-index:0;border-radius:50%;background:radial-gradient(circle,#cdad6a08,transparent 65%);transform:translate(-1000px,-1000px);will-change:transform}header,main,footer{position:relative;z-index:1}.nav{height:104px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:14px}.seal{width:47px;height:47px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--light);font:400 15px var(--serif);letter-spacing:-2px;padding-right:2px;box-shadow:0 0 25px #cdad6a0b;position:relative}.seal::after{content:'';position:absolute;inset:4px;border:1px solid #cdad6a26;border-radius:50%}.wordmark{font-size:20px;font-weight:500;letter-spacing:.26em;line-height:1.3}.wordmark small{display:block;margin-top:6px;font-size:7px;letter-spacing:.48em;color:var(--muted)}.chapter{display:flex;align-items:center;gap:11px;font-size:8px;letter-spacing:.17em;color:var(--muted)}.nav-right{display:flex;align-items:center;gap:34px}.nav-link{font-size:10px;color:var(--muted)}.nav-link:hover{color:var(--light)}
+.hero{padding:72px 0 48px;position:relative;overflow:hidden;isolation:isolate}.hero::before{content:'';position:absolute;inset:-130px -20% 0;z-index:-2;background:radial-gradient(ellipse at 70% 40%,#0c482b66,transparent 45%),radial-gradient(ellipse at 12% 20%,#cdad6a0a,transparent 45%)}.hero::after{content:'';position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#cdad6a05 1px,transparent 1px),linear-gradient(90deg,#cdad6a05 1px,transparent 1px);background-size:70px 70px;mask-image:linear-gradient(90deg,transparent 25%,#000)}.hero-grid{display:grid;grid-template-columns:1.13fr 1fr;gap:24px;align-items:center}.hero-copy{padding-bottom:15px}.status{display:inline-flex;align-items:center;gap:12px;font-size:8px;letter-spacing:.17em;color:var(--light);margin-bottom:30px}.status::before{content:'';width:25px;height:1px;background:var(--gold)}h1{font:400 clamp(44px,4.75vw,68px)/1.17 var(--serif);letter-spacing:-.045em;margin-bottom:27px}h1 span{display:block;color:var(--light)}.hero-description{color:var(--muted);font-size:12px;line-height:2;max-width:420px;margin-bottom:30px}.signup-shell{max-width:480px}.form-label{display:block;font-size:10px;color:var(--light);margin-bottom:10px}.input-wrap{display:flex;align-items:center;gap:6px;background:#071e14cc;border:1px solid #cdad6a4d;padding:6px;border-radius:9px;transition:border-color .3s}.input-wrap:focus-within{border-color:var(--gold)}.input-wrap input{background:transparent;border:0;outline:none;min-width:0;width:100%;color:var(--white);font-size:11px;padding:12px}.input-wrap input::placeholder{color:#90a294;font-size:10px}.input-wrap input:focus-visible{outline:1px solid var(--gold);outline-offset:-2px;border-radius:4px}.input-wrap .button{flex-shrink:0;padding-inline:16px;font-size:10px;gap:12px}.consent{display:flex;align-items:flex-start;gap:8px;font-size:9px;color:var(--muted);margin-top:13px}.consent input{accent-color:var(--gold);margin:4px 0 0;flex-shrink:0}.form-message{font-size:11px;color:#ffc2af;margin:8px 0 0;min-height:18px}.form-note{font-size:9px;color:var(--muted);margin-top:7px}.success{border:1px solid #34d39940;padding:22px;background:#0a291d;border-radius:12px;animation:enter .5s ease-out}.success-mark{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--pulse);border-radius:50%;color:var(--pulse);margin-bottom:12px}.success h3{font:400 21px var(--serif);margin-bottom:9px}.success p{font-size:12px;color:var(--muted);margin-bottom:12px}.success .text-link{font-size:10px}@keyframes enter{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}.quota{display:flex;align-items:center;gap:16px;margin-top:28px}.quota-value{font:400 34px/1 var(--serif);color:var(--light)}.quota-value small{font-size:16px;color:var(--muted)}.quota-copy{font-size:10px;color:var(--muted)}.quota-copy b{font-weight:500;color:var(--white)}.quota-track{margin-top:7px;height:2px;background:#cdad6a22;width:160px}.quota-track span{display:block;width:47%;height:100%;background:var(--gold)}.quota-foot{font-size:8px;letter-spacing:.05em;color:var(--muted)}
+/* 3D device and a deliberately illustrative, self-contained SVG map. */
+.stage{position:relative;min-height:660px;display:grid;place-items:center;perspective:1400px}.orbital{position:absolute;width:500px;height:500px;border:1px solid #cdad6a15;border-radius:50%;transform:rotate(-25deg) scaleY(.86);pointer-events:none}.orbital::before,.orbital::after{content:'';position:absolute;border:1px solid #cdad6a0b;border-radius:50%}.orbital::before{inset:-44px}.orbital::after{inset:43px;border-style:dashed}.axis{position:absolute;left:0;right:0;top:48%;height:1px;background:linear-gradient(90deg,transparent,#cdad6a22,transparent);transform:rotate(-25deg);pointer-events:none}.phone{width:292px;height:596px;padding:6px;border-radius:47px;position:relative;background:linear-gradient(125deg,#88908a 0%,#28372c 18%,#7a8076 40%,#16251d 55%,#657066 90%);box-shadow:inset 0 0 0 1px #b8b4a04a,12px 12px 0 -9px #1c2b21,35px 40px 70px #0009;transform:rotateX(6deg) rotateY(-14deg) rotateZ(-5deg);transition:transform .6s cubic-bezier(.2,.75,.2,1);transform-style:preserve-3d}.phone::before{content:'';position:absolute;left:-2px;top:122px;width:3px;height:51px;background:#455246;border-radius:3px}.phone::after{content:'';position:absolute;right:-3px;top:156px;width:3px;height:65px;background:#3f4b41;border-radius:3px}.screen{height:100%;border:2px solid #010805;border-radius:40px;position:relative;overflow:hidden;background:#071a12}.screen::after{content:'';position:absolute;inset:0;border-radius:38px;box-shadow:inset 0 0 25px #0005;pointer-events:none;z-index:7}.phone-status{height:40px;padding:11px 22px;display:flex;justify-content:space-between;font-size:9px;font-weight:600}.island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:83px;height:21px;background:#010805;border-radius:20px;z-index:8}.phone-header{position:absolute;top:56px;left:16px;right:16px;z-index:3}.app-wordmark{font:500 24px var(--serif);color:var(--light);display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.member{font:500 6px var(--sans);letter-spacing:.12em;border:1px solid var(--line);border-radius:20px;padding:6px 8px}.phone-tabs{display:flex;gap:5px}.phone-tabs span{font-size:7px;padding:6px 10px;border:1px solid var(--line);border-radius:20px;background:#0c281b}.phone-tabs span:first-child{background:var(--gold);color:var(--ink)}.night-map{position:absolute;top:126px;left:0;width:100%;height:340px}.map-label{font:6px var(--sans);letter-spacing:2px;fill:#8ca49690}.pin{position:absolute;z-index:4;display:grid;place-items:center;width:44px;height:44px;border-radius:15px;border:1px solid #cdad6a80;background:#10281cec;color:var(--light);box-shadow:0 5px 20px #0007;transition:background .3s,transform .3s,border-color .3s}.pin:hover{transform:translateY(-4px)}.pin[aria-pressed="true"]{background:var(--gold);color:var(--ink);border-color:var(--light);box-shadow:0 0 0 5px #cdad6a13,0 10px 25px #0005}.pin .icon{width:21px;height:21px}.pin-one{top:230px;left:135px}.pin-two{top:180px;left:202px}.pin-three{top:190px;left:50px}.you{position:absolute;top:289px;left:105px;background:var(--pulse);border:2px solid #ceffed;width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 10px #34d39913,0 0 20px #34d39950}.place-card{position:absolute;z-index:5;bottom:60px;left:11px;right:11px;padding:15px;border:1px solid #cdad6a40;border-radius:16px;background:#071c13f2;backdrop-filter:blur(24px);min-height:175px}.place-kicker{font-size:6px;letter-spacing:.17em;color:var(--pulse);margin-bottom:7px}.place-card h3{font:500 17px/1.3 var(--serif);margin-bottom:7px}.place-card p{font-size:9px;line-height:1.7;color:#acbdb1;margin-bottom:10px}.perk{border-top:1px solid var(--line);padding-top:9px;color:var(--light);font-size:8px;display:flex;gap:8px;align-items:flex-start}.perk .icon{width:14px;height:14px;flex-shrink:0}.perk small{display:block;color:var(--muted);font-size:6px;letter-spacing:.1em;margin-bottom:3px}.phone-bottom{position:absolute;bottom:16px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:6px}.phone-bottom span{display:grid;justify-items:center;gap:3px}.phone-bottom .icon{width:17px;height:17px}.phone-bottom span:first-child{color:var(--gold)}.home-bar{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:80px;height:3px;background:#f7e9c866;border-radius:3px}.float-badge{position:absolute;z-index:9;right:-4px;top:8px;width:205px;padding:19px;border:1px solid #cdad6a40;border-radius:13px;background:#0c261cb3;backdrop-filter:blur(24px);box-shadow:0 20px 60px #0005;transform:rotate(3deg);pointer-events:none}.float-badge .eyebrow{font-size:7px}.float-badge p{font:400 18px/1.4 var(--serif);color:var(--light);margin:9px 0}.float-badge small{font-size:8px;color:var(--muted)}.stage-hint{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:8px;letter-spacing:.1em;color:var(--muted)}
+.marquee{border-block:1px solid var(--line);padding:25px 0}.marquee .container{display:flex;align-items:center;justify-content:space-between;gap:25px}.marquee p{font:400 16px var(--serif);color:var(--light);margin:0}.marquee span{font-size:8px;letter-spacing:.18em;color:var(--muted)}.pillars{padding:96px 0}.section-top{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:38px}h2{font:400 clamp(30px,3.2vw,44px)/1.3 var(--serif);letter-spacing:-.025em;margin:12px 0 0}.section-top>p{font-size:12px;max-width:280px;color:var(--muted);margin:0}.bento{display:grid;grid-template-columns:1.05fr 1fr;grid-template-rows:1fr 1fr;gap:18px}.tile{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;padding:30px;background:linear-gradient(130deg,#0b281b99,#061a1280);backdrop-filter:blur(24px);transition:border-color .3s,transform .3s}.tile:hover{border-color:#cdad6a77;transform:translateY(-4px)}.tile-main{grid-row:span 2;min-height:470px;display:flex;flex-direction:column;justify-content:space-between}.tile-row{display:flex;justify-content:space-between;color:var(--gold);align-items:center}.tile-number{font-size:9px;color:var(--muted);letter-spacing:.16em}.tile h3{font:400 25px/1.3 var(--serif);margin:15px 0 12px}.tile p{font-size:12px;color:var(--muted);max-width:360px;margin:0;line-height:1.9}.tile-tag{display:inline-flex;gap:8px;align-items:center;font-size:7px;letter-spacing:.13em;color:var(--gold);margin-top:20px}.glass-art{position:absolute;width:210px;height:220px;right:20px;top:48px;opacity:.6;pointer-events:none}.tile-main .tile-copy{position:relative;z-index:1;max-width:355px;padding-top:180px}.tile-small{min-height:226px;display:grid;grid-template-columns:42px 1fr;gap:20px}.tile-small h3{font-size:23px;margin-top:9px}.tile-small>.icon{color:var(--gold);margin-top:7px}.bento-note{font-size:9px;color:var(--muted);margin:17px 0 0}.club-line{padding:35px;border:1px solid var(--line);border-radius:18px;margin-top:24px;display:flex;justify-content:space-between;gap:25px;align-items:center;background:linear-gradient(90deg,#0c2c1c44,transparent)}.club-line p{font:400 18px var(--serif);margin:7px 0 0;color:var(--light)}.faq{padding:65px 0 85px;border-top:1px solid var(--line)}.faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}.faq-intro p{font-size:12px;color:var(--muted);max-width:260px;margin-top:20px}details{border-bottom:1px solid var(--line)}details:first-child{border-top:1px solid var(--line)}summary{list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;padding:24px 0;cursor:pointer;font-size:12px}summary::-webkit-details-marker{display:none}summary::after{content:'+';font-size:23px;color:var(--gold);font-weight:400}details[open] summary::after{content:'−'}details p{color:var(--muted);font-size:12px;line-height:1.9;padding-right:30px;margin-bottom:24px}footer{border-top:1px solid var(--line);padding:38px 0 23px;background:#010604}.footer-top{display:flex;justify-content:space-between;align-items:center;gap:24px}.coordinates{text-align:right;font-size:8px;letter-spacing:.17em;color:var(--muted)}.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid var(--line);padding-top:20px;margin-top:30px;font-size:9px;color:var(--muted)}.footer-links{display:flex;gap:22px;align-items:center;flex-wrap:wrap}.footer-links button,.footer-links a{font:inherit;color:var(--muted);padding:10px 0;border:0;background:none}.footer-links button:hover,.footer-links a:hover{color:var(--light)}
+dialog{width:min(650px,calc(100% - 32px));max-height:85dvh;overflow:auto;padding:32px;background:#071a12;color:var(--white);border:1px solid #cdad6a55;border-radius:20px;box-shadow:0 30px 100px #0008}dialog::backdrop{background:#010805db;backdrop-filter:blur(14px)}.dialog-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px}dialog h2{font-size:24px;margin:0 0 25px}dialog h3{font-size:13px;margin:24px 0 8px;color:var(--light)}dialog p,dialog li{font-size:12px;color:var(--muted);line-height:1.9}dialog a{color:var(--light);text-decoration:underline;overflow-wrap:anywhere}.close{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:none;font-size:25px;flex-shrink:0}.notice{border:1px solid var(--line);padding:15px;border-radius:9px}.motion .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}.motion .reveal.visible{opacity:1;transform:none}
+@media(min-width:1500px){.hero{padding-block:100px 75px}}
+@media(max-width:1100px){.container{width:calc(100% - 56px)}.chapter{display:none}.hero-grid{gap:15px;grid-template-columns:1fr 1fr}h1{font-size:50px}.float-badge{right:-10px;width:195px}.input-wrap{flex-wrap:wrap}.input-wrap input{min-height:42px}.input-wrap .button{width:100%}.hero-description{max-width:360px}.stage{min-height:680px}}
+@media(max-width:760px){.container{width:min(540px,calc(100% - 40px))}.nav{height:84px}.wordmark{font-size:16px}.seal{width:40px;height:40px;font-size:13px}.brand{gap:10px}.nav-link{display:none}.nav-right .button{font-size:9px;padding:11px 13px;min-height:42px;gap:9px}.hero{padding:48px 0 35px}.hero-grid{grid-template-columns:1fr;gap:26px}.status{font-size:7px;letter-spacing:.12em;margin-bottom:25px}h1{font-size:clamp(39px,10vw,56px)}.hero-description{font-size:12px;max-width:420px}.signup-shell{max-width:100%}.input-wrap{flex-wrap:nowrap}.input-wrap .button{width:auto}.hero-copy{padding-bottom:0}.stage{min-height:650px;perspective:1200px}.phone{transform:rotateX(3deg) rotateY(-9deg) rotateZ(-4deg)}.orbital{width:350px;height:420px}.float-badge{right:0;top:12px;width:168px;padding:16px}.float-badge p{font-size:16px}.stage-hint{font-size:7px}.marquee .container{flex-direction:column;gap:10px;text-align:center}.marquee p{font-size:14px}.pillars{padding:65px 0}.section-top{display:block}.section-top>p{margin-top:20px;max-width:360px}.bento{grid-template-columns:1fr;grid-template-rows:auto}.tile-main{grid-row:auto;min-height:390px}.tile-main .tile-copy{padding-top:140px}.tile-small{min-height:210px;padding:25px;gap:14px;grid-template-columns:30px 1fr}.tile-small h3{font-size:21px}.club-line{padding:24px;flex-direction:column;align-items:flex-start}.club-line p{font-size:18px}.faq{padding:55px 0 65px}.faq-grid{grid-template-columns:1fr;gap:25px}.faq-intro p{max-width:none}.footer-top{align-items:flex-start}.coordinates{font-size:7px}.footer-bottom{flex-direction:column;align-items:flex-start;gap:10px}.footer-links{gap:20px}dialog{padding:25px}dialog h2{font-size:21px}}
+@media(max-width:380px){.container{width:calc(100% - 30px)}.nav-right .button{font-size:8px;gap:6px}.input-wrap{flex-direction:column;align-items:stretch}.input-wrap .button{width:100%}.stage{min-height:620px}.phone{width:278px;height:580px}.float-badge{width:160px;right:-5px;top:10px}.float-badge p{font-size:14px}.phone-header{left:13px;right:13px}.pin-two{left:193px}.place-card h3{font-size:16px}.phone-tabs span{padding-inline:8px}.footer-top{flex-direction:column}.coordinates{text-align:left}}
+@media(hover:none),(pointer:coarse){#spotlight{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.motion .reveal{opacity:1;transform:none}#spotlight{display:none}}
+</style>
 </head>
 <body>
+<a class="skip" href="#main">Przejdź do treści</a>
+<div id="spotlight" aria-hidden="true"></div>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="glass" viewBox="0 0 24 24"><path d="M3 4h18l-9 10L3 4Zm9 10v7m-5 0h10M6 7h12"/></symbol>
+<symbol id="wave" viewBox="0 0 24 24"><path d="M2 8c4-5 6 5 10 0s6 5 10 0M2 13c4-5 6 5 10 0s6 5 10 0M2 18c4-5 6 5 10 0s6 5 10 0"/></symbol>
+<symbol id="coffee" viewBox="0 0 24 24"><path d="M4 8h12v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Zm12 1h2a3 3 0 0 1 0 6h-2M2 22h18M8 2v3m5-3v3"/></symbol>
+<symbol id="moon" viewBox="0 0 24 24"><path d="M20 14A8.5 8.5 0 0 1 10 4a8.5 8.5 0 1 0 10 10Zm-2-11v5m-2.5-2.5h5"/></symbol>
+<symbol id="gem" viewBox="0 0 24 24"><path d="m3 9 4-5h10l4 5-9 12L3 9Zm0 0h18M7 4l5 17 5-17M7 4l5 5 5-5"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/></symbol>
+<symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 2v6m8-6v6M4 11h16"/></symbol>
+</svg>
+<header><nav class="container nav" aria-label="Nawigacja główna">
+<a href="#" class="brand" aria-label="Lokooo — początek strony"><span class="seal" aria-hidden="true">LKO</span><span class="wordmark">LOKOOO<small>SZCZECIN</small></span></a>
+<div class="chapter"><span class="dot pulse"></span>CHAPTER 01 · SELEKCJA ZAMKNIĘTA</div>
+<div class="nav-right"><a class="nav-link" href="#filary">Idea klubu</a><a href="#aplikuj" class="button gold">Aplikuj o wstęp <span aria-hidden="true">↗</span></a></div>
+</nav></header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-title"><div class="container hero-grid">
+<div class="hero-copy">
+<div class="status">PRIVATE URBAN SYNDICATE · MEMBERS ONLY</div>
+<h1 id="hero-title">Miasto ma swój<span>wewnętrzny<br>krąg.</span></h1>
+<p class="hero-description">Nieoczywiste adresy. Selekcja po zmroku. Dostęp do miejskich przywilejów, których nie kupisz na ulicy. Lokooo to klucz do zamkniętej warstwy Szczecina.</p>
+<div class="signup-shell" id="aplikuj">
+<form id="application-form" novalidate>
+<label class="form-label" for="application">Twój pierwszy krok do środka.</label>
+<div class="input-wrap"><input id="application" name="application" type="text" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required placeholder="Wpisz swój adres e-mail lub kod zaproszenia..." aria-describedby="application-error form-mode"><button type="submit" class="button gold" id="submit">Poproś o dostęp <span class="arrow" aria-hidden="true">↗</span></button></div>
+<div class="consent"><input id="privacy-check" type="checkbox" required><label for="privacy-check">Zapoznałem się z <button type="button" class="text-link" data-dialog="privacy">informacją o prywatności</button> i <button type="button" class="text-link" data-dialog="terms">zasadami zgłoszenia</button>.</label></div>
+<p id="application-error" class="form-message" role="status" aria-live="polite"></p>
+</form>
+<div class="success" id="application-result" hidden tabindex="-1"><span class="success-mark" aria-hidden="true">✓</span><h3 id="result-title"></h3><p id="result-copy"></p><button type="button" id="reset-form" class="text-link">Wróć do formularza</button></div>
+<p class="form-note" id="form-mode">Podgląd interakcji — formularz nie wysyła zgłoszeń.</p>
+<noscript><p class="form-note">Interaktywny podgląd wymaga JavaScript. Kontakt: <a href="mailto:syndicate@lokooo.club">syndicate@lokooo.club</a>.</p></noscript>
+</div>
+<div class="quota"><div class="quota-value">47 <small>/ 100</small></div><div class="quota-copy"><b>zaproszeń z I puli</b><div class="quota-track" aria-hidden="true"><span></span></div><span class="quota-foot">Pula demonstracyjna · nie jest stanem rekrutacji</span></div></div>
+</div>
+<div class="stage" id="stage" role="group" aria-label="Interaktywny, koncepcyjny podgląd aplikacji Lokooo">
+<div class="orbital" aria-hidden="true"></div><div class="axis" aria-hidden="true"></div>
+<div class="phone" id="phone"><div class="screen">
+<div class="phone-status" aria-hidden="true"><span>20:44</span><span>▮▮▮ &nbsp; ▰</span></div><div class="island" aria-hidden="true"></div>
+<div class="phone-header" aria-hidden="true"><div class="app-wordmark">lokooo.<span class="member">PRIVATE MEMBER</span></div><div class="phone-tabs"><span>Odkrywaj</span><span>Po zmroku</span><span>Przywileje</span></div></div>
+<svg class="night-map" viewBox="0 0 280 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><pattern id="blocks" width="55" height="49" patternUnits="userSpaceOnUse" patternTransform="rotate(-19)"><rect x="5" y="5" width="43" height="36" rx="2" fill="#10291C" stroke="#284632" stroke-width=".7"/><path d="M7 9h18m5 0h10M9 33h10m8 0h14" stroke="#cdad6a" opacity=".18" stroke-width="1"/></pattern><linearGradient id="river" x1="0" x2="1"><stop stop-color="#0c3026"/><stop offset=".5" stop-color="#164d3d"/><stop offset="1" stop-color="#0c3026"/></linearGradient><radialGradient id="mapGlow"><stop stop-color="#cdad6a" stop-opacity=".09"/><stop offset="1" stop-color="#cdad6a" stop-opacity="0"/></radialGradient></defs>
+<rect width="280" height="340" fill="#092016"/><rect width="280" height="340" fill="url(#blocks)"/>
+<path d="M232-20c-50 65 14 95-24 149s-30 78-31 108-11 67-70 123" stroke="#254133" stroke-width="43" fill="none"/><path d="M232-20c-50 65 14 95-24 149s-30 78-31 108-11 67-70 123" stroke="url(#river)" stroke-width="37" fill="none"/>
+<g fill="none" stroke="#8e8551" stroke-width="1" opacity=".4"><path d="m-30 85 230-76M-20 145l220-72M-10 205l168-56M10 275l167-55M48-20l92 245M110-20l61 171"/><path d="m133 166 129-29M140 235l112 7" stroke-width="4"/></g>
+<circle cx="95" cy="140" r="85" fill="url(#mapGlow)"/>
+<text x="22" y="145" class="map-label">ŚRÓDMIEŚCIE</text><text x="215" y="178" class="map-label" transform="rotate(65 215 178)">ODRA</text><text x="132" y="21" class="map-label" style="font-size:5px">WAŁY CHROBREGO</text>
+</svg>
+<button class="pin pin-one" type="button" data-place="odra" aria-label="Pokaż: Hala Odra / Bulwary" aria-pressed="true" aria-controls="place-card"><svg class="icon" aria-hidden="true"><use href="#glass"/></svg></button>
+<button class="pin pin-two" type="button" data-place="river" aria-label="Pokaż: Bulwary Piastowskie / Dźwigozaury" aria-pressed="false" aria-controls="place-card"><svg class="icon" aria-hidden="true"><use href="#wave"/></svg></button>
+<button class="pin pin-three" type="button" data-place="coffee" aria-label="Pokaż: Kawiarnia Specialty / Deptak Bogusława" aria-pressed="false" aria-controls="place-card"><svg class="icon" aria-hidden="true"><use href="#coffee"/></svg></button>
+<div class="you" aria-hidden="true"></div>
+<div class="place-card" id="place-card" aria-live="polite" aria-atomic="true"><div class="place-kicker" id="place-kicker">01 / AFTER DARK</div><h3 id="place-name">Hala Odra / Bulwary</h3><p id="place-description">Wieczór nad wodą. Rozmowy, które nie kończą się z ostatnim światłem.</p><div class="perk"><svg class="icon" aria-hidden="true"><use href="#gem"/></svg><div><small>IDEA PRZYWILEJU · PODGLĄD</small><span id="place-perk">Prywatna rezerwacja i powitalny cocktail.</span></div></div></div>
+<div class="phone-bottom" aria-hidden="true"><span><svg class="icon"><use href="#pin"/></svg>Mapa</span><span><svg class="icon"><use href="#calendar"/></svg>Wieczór</span><span><svg class="icon"><use href="#gem"/></svg>Klub</span><span><svg class="icon"><use href="#user"/></svg>Profil</span></div><div class="home-bar" aria-hidden="true"></div>
+</div></div>
+<div class="float-badge" aria-hidden="true"><div class="eyebrow">SZCZECIN SYNDICATE</div><p>Ekskluzywny krąg<br>partnerów miejskich.</p><small>Wizja klubu. Jeden wspólny adres.</small></div>
+<p class="stage-hint">DOTKNIJ PINEZKI · POZNAJ INNĄ STRONĘ MIASTA</p>
+</div>
+</div></section>
+<div class="marquee"><div class="container"><span>SZCZECIN, POLSKA / CHAPTER 01</span><p>Nie wszędzie. We właściwych miejscach.</p><span>PRIVATE URBAN SYNDICATE & SOCIETY</span></div></div>
+<section class="pillars container" id="filary" aria-labelledby="pillars-title">
+<div class="section-top reveal"><div><div class="eyebrow">01 — ARCHITEKTURA DOBREGO ŻYCIA</div><h2 id="pillars-title">Trzy światy.<br>Jeden wewnętrzny krąg.</h2></div><p>Smak. Kultura. Przywilej przynależności.<br>Tak projektujemy doświadczenie Lokooo.</p></div>
+<div class="bento">
+<article class="tile tile-main reveal"><div class="tile-row"><svg class="icon" aria-hidden="true"><use href="#glass"/></svg><span class="tile-number">01 / THE ART OF TASTE</span></div>
+<svg class="glass-art" viewBox="0 0 210 220" fill="none" aria-hidden="true"><ellipse cx="110" cy="40" rx="79" ry="17" stroke="#CDAD6A" stroke-width=".8"/><path d="M31 40 110 133 189 40M110 133v61m-36 8c0-11 72-11 72 0s-72 11-72 0Z" stroke="#CDAD6A" stroke-width=".8"/><path d="m48 61 62 72 61-72c-35 12-88 12-123 0Z" fill="#CDAD6A" fill-opacity=".08"/><ellipse cx="110" cy="61" rx="62" ry="11" stroke="#F7E9C8" stroke-opacity=".5" stroke-width=".7"/><path d="m131 11-29 91" stroke="#F7E9C8" stroke-opacity=".6"/><ellipse cx="106" cy="87" rx="8" ry="11" transform="rotate(20 106 87)" fill="#CDAD6A" fill-opacity=".18" stroke="#CDAD6A" stroke-width=".7"/><circle cx="110" cy="105" r="101" stroke="#CDAD6A" stroke-opacity=".1"/></svg>
+<div class="tile-copy"><div class="eyebrow">TASTE & SPECIALTY</div><h3>Dobre adresy.<br>Jeszcze lepszy gust.</h3><p>Restauracje autorskie, bary speakeasy i kawiarnie trzeciej fali. Selekcja, która zaczyna się od charakteru miejsca. Bez kompromisów.</p><span class="tile-tag">GASTRONOMIA & RZEMIOSŁO <span aria-hidden="true">↗</span></span></div></article>
+<article class="tile tile-small reveal"><svg class="icon" aria-hidden="true"><use href="#moon"/></svg><div><div class="eyebrow">02 / AFTER DARK</div><h3>Miasto po godzinach.</h3><p>Nocna kultura, kameralne wydarzenia i starannie dobrane towarzystwo. W naszej wizji: prywatne wejścia i wieczory poza oczywistym planem.</p><span class="tile-tag">KULTURA & NOCNE ŻYCIE <span aria-hidden="true">↗</span></span></div></article>
+<article class="tile tile-small reveal"><svg class="icon" aria-hidden="true"><use href="#gem"/></svg><div><div class="eyebrow">03 / PRIVATE PERKS</div><h3>Przynależność ma znaczenie.</h3><p>Projektujemy dedykowane przywileje, unikalne doświadczenia i współprace ze światem europejskiej mody oraz lifestyle’u.</p><span class="tile-tag">RELACJE & PRZYWILEJE <span aria-hidden="true">↗</span></span></div></article>
+</div>
+<p class="bento-note">Scenariusze prezentacyjne. Pokazane miejsca i przywileje nie stanowią potwierdzenia współpracy ani dostępnej oferty partnerskiej.</p>
+<div class="club-line reveal"><div><div class="eyebrow">FOR THOSE WHO KNOW WHERE TO LOOK</div><p>Najciekawsze historie zaczynają się od zaproszenia.</p></div><a href="#aplikuj" class="button">Znajdź się w kręgu <span class="arrow" aria-hidden="true">↗</span></a></div>
+</section>
+<section class="faq" id="faq" aria-labelledby="faq-title"><div class="container faq-grid">
+<div class="faq-intro reveal"><div class="eyebrow">02 — ZASADY PRZYNALEŻNOŚCI</div><h2 id="faq-title">Dyskrecja.<br>Nie niedopowiedzenia.</h2><p>Dobry klub zaczyna się od jasnych zasad. Oto fundamenty naszej koncepcji.</p></div>
+<div class="reveal">
+<details name="club-faq"><summary>Jak wygląda droga do wewnętrznego kręgu?</summary><p>Planujemy rekrutację etapami — przez zgłoszenie lub kod zaproszenia. Zgłoszenie nie gwarantuje członkostwa. Obecna strona prezentuje koncepcję; formularz wyraźnie informuje, czy zapisy są aktywne.</p></details>
+<details name="club-faq"><summary>Co oznaczają przywileje członkowskie?</summary><p>To kierunek projektowanego programu: kameralne doświadczenia, dedykowany dostęp i relacje z wybranymi markami. Obowiązujące warunki, dostępność i potwierdzonych partnerów przedstawimy przed uruchomieniem programu.</p></details>
+<details name="club-faq"><summary>Jak rozpocząć rozmowę o partnerstwie?</summary><p>Stawiamy na spójność wartości, jakość doświadczenia i jasne warunki współpracy. Zapytania biznesowe przyjmujemy pod adresem <a class="text-link" href="mailto:syndicate@lokooo.club">syndicate@lokooo.club</a>. Samo wymienienie miejsca na stronie nie oznacza zawartego partnerstwa.</p></details>
+</div></div></section>
+</main>
+<footer><div class="container"><div class="footer-top"><a href="#" class="brand" aria-label="Lokooo — początek strony"><span class="seal" aria-hidden="true">LKO</span><span class="wordmark">LOKOOO<small>PRIVATE URBAN SYNDICATE</small></span></a><div class="coordinates">53°25′43″ N • 14°33′09″ E<br>SZCZECIN, POLSKA</div></div><div class="footer-bottom"><span>© <span id="year">2026</span> LOKOOO. The city, reimagined.</span><div class="footer-links"><button type="button" data-dialog="privacy">Prywatność / RODO</button><button type="button" data-dialog="terms">Regulamin klubu</button><a href="mailto:syndicate@lokooo.club">syndicate@lokooo.club ↗</a></div></div></div></footer>
+<dialog id="legal-dialog" aria-labelledby="legal-title"><div class="dialog-top"><h2 id="legal-title"></h2><button class="close" type="button" aria-label="Zamknij okno">×</button></div><div id="legal-content"></div></dialog>
+<template id="privacy-template">
+<p class="notice">Informacja dla wersji prezentacyjnej. Zapisy nie są uruchomione. Przed rozpoczęciem zbierania zgłoszeń operator musi uzupełnić i opublikować informację odpowiadającą rzeczywistemu przetwarzaniu danych.</p>
+<h3>1. Operator i kontakt</h3><p>Marka: LOKOOO. Kontakt wskazany dla projektu: <a href="mailto:syndicate@lokooo.club">syndicate@lokooo.club</a>. Pełna nazwa podmiotu będącego administratorem danych, adres oraz właściwe dane identyfikacyjne wymagają uzupełnienia przed uruchomieniem zapisów.</p>
+<h3>2. Formularz w tej wersji</h3><p>W trybie podglądu wpisany e-mail lub kod zaproszenia jest sprawdzany tylko w przeglądarce. Nie jest wysyłany do rejestru, zapisywany w cookies ani localStorage. Zamknięcie strony nie tworzy zgłoszenia. Wysyłając e-mail przez własny program pocztowy, przekazujesz dane niezależnie od formularza.</p>
+<h3>3. Połączenia zewnętrzne i logi</h3><p>Fonty pobierane są z Google Fonts, co wymaga połączenia z serwerami dostawcy i ujawnia dane techniczne połączenia, w tym adres IP. Hosting może prowadzić logi żądań. Ten plik nie instaluje narzędzi analitycznych ani reklamowych i nie realizuje profilowania użytkowników.</p>
+<h3>4. Bezpieczeństwo transmisji</h3><p>HTTPS/TLS zależy od konfiguracji hostingu i ważnego certyfikatu domeny. Sam plik HTML nie zapewnia ani nie certyfikuje szyfrowania. Publiczny formularz powinien działać wyłącznie przez HTTPS.</p>
+<h3>5. Informacja przed uruchomieniem zapisów</h3><p>Operator powinien określić cele i podstawy prawne przetwarzania, zakres danych, odbiorców, ewentualne transfery poza EOG i zabezpieczenia, okresy przechowywania oraz zasady podejmowania decyzji o przyjęciu. Ta wersja nie zastępuje takiej informacji.</p>
+<h3>6. Prawa osoby, której dane dotyczą</h3><p>W zależności od podstawy i okoliczności przetwarzania przysługują prawa dostępu, sprostowania, usunięcia, ograniczenia, przenoszenia i sprzeciwu. Jeżeli podstawą jest zgoda, można ją wycofać bez wpływu na zgodność wcześniejszego przetwarzania. Można również wnieść skargę do Prezesa UODO.</p><p>Informacje o prawach: <a href="https://commission.europa.eu/law/law-topic/data-protection/information-individuals_en" target="_blank" rel="noopener noreferrer">Komisja Europejska — ochrona danych osobowych</a>.</p>
+</template>
+<template id="terms-template">
+<p class="notice">Zasady strony prezentacyjnej Lokooo Syndicate. Pełny regulamin członkostwa wymaga określenia operatora i rzeczywistych warunków świadczenia usługi przed jej uruchomieniem.</p>
+<h3>1. Charakter prezentacji</h3><p>Strona przedstawia koncepcję prywatnego klubu miejskiego w Szczecinie. Interaktywna mapa i przywileje są scenariuszami demonstracyjnymi. Nie stanowią gwarancji oferty ani potwierdzenia relacji z pokazanymi miejscami.</p>
+<h3>2. Zgłoszenie i zaproszenie</h3><p>W trybie podglądu formularz nie rejestruje zgłoszenia. Kod jest sprawdzany wyłącznie pod względem formatu, a nie ważności. Przy aktywnych zapisach dopiero potwierdzenie serwera oznacza przyjęcie zgłoszenia; nie oznacza ono przyznania członkostwa.</p>
+<h3>3. Pula miejsc i odpłatność</h3><p>Licznik 47 / 100 jest demonstracyjny. Formularz nie pobiera płatności i nie zawiera umowy o płatne członkostwo. Ewentualne ceny, warunki dostępu, odnowienia i rezygnacji muszą zostać przedstawione przed zawarciem umowy.</p>
+<h3>4. Partnerstwa</h3><p>Współpraca wymaga odrębnego uzgodnienia. Nazwy miejsc służą zilustrowaniu koncepcji i nie oznaczają ich rekomendacji ani autoryzacji projektu.</p>
+<h3>5. Kontakt</h3><p>Pytania o projekt i partnerstwa: <a href="mailto:syndicate@lokooo.club">syndicate@lokooo.club</a>. Zasady reklamacji oraz pozostałe obowiązki operatora należy uzupełnić w regulaminie działającej usługi.</p>
+</template>
+<script>
+(() => {
+  'use strict';
+  /*
+   * Konfiguracja produkcyjna:
+   * 1. Uzupełnij dokumenty i dane operatora; skonfiguruj HTTPS oraz skrzynkę kontaktową.
+   * 2. Podłącz własny endpoint tej samej domeny, np. /api/applications.
+   * 3. Ustaw legalReady:true dopiero po opublikowaniu właściwych dokumentów.
+   * Serwer musi walidować dane/kody, ograniczać nadużycia, obsłużyć duplikaty
+   * i potwierdzać zapis w bazie przed odpowiedzią {accepted:true}.
+   * Nie umieszczaj kluczy API w HTML. Licznik zmień dopiero na podstawie rzeczywistych danych.
+   */
+  const CONFIG = Object.freeze({ applicationEndpoint: '', legalReady: false });
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const form = document.getElementById('application-form');
+  const input = document.getElementById('application');
+  const consent = document.getElementById('privacy-check');
+  const submit = document.getElementById('submit');
+  const error = document.getElementById('application-error');
+  const result = document.getElementById('application-result');
+  const mode = document.getElementById('form-mode');
+  const isLive = Boolean(CONFIG.applicationEndpoint && CONFIG.legalReady && location.protocol === 'https:');
+  let busy = false;
+  let activeAnimation = null;
+  document.getElementById('year').textContent = new Date().getFullYear();
+  if (isLive) mode.textContent = 'Zgłoszenie nie gwarantuje członkostwa. Odpowiedź otrzymasz zgodnie z zasadami rekrutacji.';
 
-  <div class="ambient-glow"></div>
-  <div class="ambient-grid"></div>
-  <div class="spotlight" id="spotlight"></div>
-
-  <header>
-    <div class="container nav">
-      <a href="#" class="brand">
-        <div class="monogram">LKO</div>
-        <div class="brand-name">LOKOOO</div>
-        <div class="nav-tag">SZCZECIN</div>
-      </a>
-      <div class="nav-actions">
-        <div class="chapter-pill">
-          <div class="live-dot"></div>
-          CHAPTER 01 · EDYCJA ZAMKNIĘTA
-        </div>
-        <a href="#dolacz" class="btn-header">Aplikuj</a>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-left">
-          <div class="hero-eyebrow">
-            <span class="live-dot"></span>
-            PRIVATE URBAN SYNDICATE
-          </div>
-          <h1>
-            Miasto ma swój
-            <span class="highlight">wewnętrzny krąg.</span>
-          </h1>
-          <p class="hero-desc">
-            Dobre adresy. Wyselekcjonowane wieczory. Dostęp do miejskich przywilejów, które mają prawdziwe znaczenie. Lokooo to Twój klucz do innej warstwy Szczecina.
-          </p>
-
-          <form id="dolacz" class="signup-card" onsubmit="handleSignup(event)">
-            <input type="email" id="emailInput" placeholder="Wpisz swój adres e-mail..." required>
-            <button type="submit" class="btn-claim" id="submitBtn">Poproś o dostęp ↗</button>
-          </form>
-          <div class="status-msg" id="statusMsg"></div>
-
-          <div class="availability-box">
-            <div class="avail-number" id="availCount">47</div>
-            <div class="avail-text">
-              <strong>zaproszeń w pierwszej puli</strong><br>
-              Szczecin · Rozpatrywane kolejno
-              <div class="avail-progress">
-                <div class="avail-progress-fill"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- INTERAKTYWNY TELEFON LOKOOO -->
-        <div class="phone-stage">
-          <div class="phone-halo"></div>
-          
-          <div class="phone-device" id="phoneMockup" title="Kliknij pinezki, aby zmienić miejsce!">
-            <div class="phone-screen">
-              <div>
-                <div class="phone-island"></div>
-                <div class="phone-top-bar">
-                  <div class="phone-app-logo">lokooo.</div>
-                  <div class="phone-badge">PREMIUM MEMBER</div>
-                </div>
-              </div>
-
-              <!-- Interaktywna mapa wektorowa z pinezkami -->
-              <div class="phone-map-container">
-                <svg class="phone-map-svg" viewBox="0 0 300 320" preserveAspectRatio="none">
-                  <rect width="300" height="320" fill="#072217"/>
-                  <!-- Odra i rzeka -->
-                  <path d="M190 -10 C160 80, 220 160, 180 240 C150 290, 130 330, 130 330" fill="none" stroke="#12402F" stroke-width="38"/>
-                  <path d="M190 -10 C160 80, 220 160, 180 240 C150 290, 130 330, 130 330" fill="none" stroke="#1A553F" stroke-width="2" stroke-dasharray="4 8"/>
-                  <!-- Ulice i kwartały -->
-                  <g stroke="#183D2D" stroke-width="1.5" fill="#0C2B1E">
-                    <rect x="20" y="30" width="70" height="50" rx="6"/>
-                    <rect x="105" y="20" width="60" height="60" rx="6"/>
-                    <rect x="25" y="100" width="85" height="65" rx="6"/>
-                    <rect x="125" y="100" width="45" height="55" rx="6"/>
-                    <rect x="30" y="185" width="75" height="70" rx="6"/>
-                    <rect x="120" y="175" width="50" height="85" rx="6"/>
-                    <rect x="215" y="80" width="65" height="90" rx="6"/>
-                    <rect x="210" y="190" width="70" height="75" rx="6"/>
-                  </g>
-                </svg>
-
-                <!-- Pinezki Szczecin -->
-                <div class="map-hotspot hs-1 active" onclick="selectVenue(0)" title="Hala Odra">🍸</div>
-                <div class="map-hotspot hs-2" onclick="selectVenue(1)" title="Bulwary Piastowskie">🌊</div>
-                <div class="map-hotspot hs-3" onclick="selectVenue(2)" title="Kawiarnia Specialty">☕</div>
-              </div>
-
-              <!-- Karta wybranego miejsca -->
-              <div class="phone-venue-card" id="venueCard">
-                <div class="pvc-tag" id="venueTag">NIGHTLIFE & KULTURA</div>
-                <div class="pvc-title" id="venueTitle">Hala Odra • Bulwary</div>
-                <div class="pvc-desc" id="venueDesc">Klimatyczny chillout nad samą rzeką, autorskie foodtrucki i weekendowa selekcja muzyczna.</div>
-                <div class="pvc-perk" id="venuePerk">✦ Zniżka 15% na barze dla członków Lokooo</div>
-              </div>
-
-              <!-- Dolna belka telefonu -->
-              <div class="phone-dock">
-                <div class="dock-btn active"><span>🗺️</span><span>Mapa</span></div>
-                <div class="dock-btn"><span>✦</span><span>Dzisiaj</span></div>
-                <div class="dock-btn"><span>⚡</span><span>Skaner</span></div>
-                <div class="dock-btn"><span>👑</span><span>Klub</span></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pływający badge obok telefonu -->
-          <div class="floating-syndicate-badge">
-            <div class="fsb-eyebrow">SZCZECIN SYNDICATE</div>
-            <div class="fsb-title">Klucz do Miasta</div>
-            <div class="fsb-sub">Klubowe przywileje u wyselekcjonowanych partnerów miejskich.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BENTO SECTION -->
-    <section class="bento-section">
-      <div class="container">
-        <div class="section-header">
-          <div class="sec-eyebrow">01 — IDEA KLUBU</div>
-          <h2>Trzy powody, by wyjść w miasto.</h2>
-          <p class="sec-desc">Lokooo nie jest kolejną nudną mapą. To starannie moderowany przewodnik i system miejskich benefitów.</p>
-        </div>
-
-        <div class="bento-grid">
-          <div class="bento-card">
-            <div class="bento-num">I / TASTE</div>
-            <div class="bento-title">Gastronomia & Bary</div>
-            <p class="bento-p">Od porannego espresso w kawiarni specialty po wieczorny rzemieślniczy koktajl. Wyłącznie sprawdzone adresy bez przypadków.</p>
-          </div>
-          <div class="bento-card">
-            <div class="bento-num">II / AFTER DARK</div>
-            <div class="bento-title">Nocne Życie & Selekcja</div>
-            <p class="bento-p">Wydarzenia, koncerty i kluby o unikalnym klimacie. Koniec z pytaniem „gdzie dziś idziemy?” — plan wieczoru masz w kieszeni.</p>
-          </div>
-          <div class="bento-card">
-            <div class="bento-num">III / PRIVILEGES</div>
-            <div class="bento-title">Klubowe Przywileje</div>
-            <p class="bento-p">Wyselekcjonowane oferty, kody rabatowe i korzyści u certyfikowanych partnerów miejskich i marek lifestylowych.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section">
-      <div class="container faq-grid">
-        <div>
-          <div class="sec-eyebrow">02 — PYTANIA & ODPOWIEDZI</div>
-          <h2>Zanim przekroczysz próg.</h2>
-          <p class="sec-desc">Wszystko, co warto wiedzieć o naborze do I edycji klubu miejskiego Lokooo.</p>
-        </div>
-        <div>
-          <details open>
-            <summary>Jak otrzymać zaproszenie do Lokooo?</summary>
-            <p>Wystarczy zostawić swój adres e-mail w powyższym formularzu. Zaproszenia z pierwszej puli (47 miejsc) wysyłamy transzami, aby zachować kameralny charakter społeczności.</p>
-          </details>
-          <details>
-            <summary>Jak działają przywileje partnerskie?</summary>
-            <p>Członkowie klubu otrzymują dostęp do zamkniętych ofert, zniżek w lokalach partnerskich oraz nagród przygotowanych we współpracy z renomowanymi markami miejskimi i globalnymi.</p>
-          </details>
-          <details>
-            <summary>Dlaczego na początku wyłącznie Szczecin?</summary>
-            <p>Wierzymy w głęboką znajomość lokalnego klimatu. Budujemy najsilniejszy syndicate miejski w Szczecinie, zanim otworzymy kolejne rozdziały w innych miastach.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-top">
-        <a href="#" class="brand">
-          <div class="monogram">LKO</div>
-          <div class="brand-name">LOKOOO</div>
-        </a>
-        <div class="footer-coords">53°25′43″ N • 14°33′09″ E • SZCZECIN, POLSKA</div>
-      </div>
-      <div class="footer-legal-bar">
-        <div>&copy; 2026 LOKOOO SYNDICATE. Wszelkie prawa zastrzeżone.</div>
-        <div>
-          <button class="legal-btn" onclick="openModal('privacy')">Prywatność (RODO)</button>
-          <button class="legal-btn" onclick="openModal('terms')">Regulamin Klubu</button>
-          <button class="legal-btn" onclick="openModal('contact')">Kontakt</button>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- MODAL PRAWNY (RODO / TERMS) -->
-  <dialog id="legalModal">
-    <div class="modal-head">
-      <h3 id="modalTitle">Tytuł</h3>
-      <button class="btn-close-modal" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
-  </dialog>
-
-  <script>
-    // 1. Spotlight kursor
-    const spotlight = document.getElementById('spotlight');
-    window.addEventListener('mousemove', (e) => {
-      spotlight.style.left = e.clientX + 'px';
-      spotlight.style.top = e.clientY + 'px';
-    });
-
-    // 2. Obsługa zapisu do kolejki
-    function handleSignup(e) {
-      e.preventDefault();
-      const email = document.getElementById('emailInput').value.trim();
-      const msg = document.getElementById('statusMsg');
-      const count = document.getElementById('availCount');
-
-      if (!email) return;
-
-      msg.innerHTML = "✦ Zgłoszenie zarejestrowane. Jesteś na liście oczekujących Lokooo.";
-      document.getElementById('submitBtn').innerText = "Zgłoszono ✓";
-      document.getElementById('submitBtn').style.background = "#34D399";
-      document.getElementById('emailInput').disabled = true;
-
-      // Zmniejsz licznik o 1 dla efektu live
-      let current = parseInt(count.innerText, 10);
-      if (current > 1) {
-        count.innerText = current - 1;
-      }
-    }
-
-    // 3. Interaktywne miejsca na telefonie
-    const VENUES = [
-      {
-        tag: "NIGHTLIFE & KULTURA",
-        title: "Hala Odra • Bulwary",
-        desc: "Klimatyczny chillout nad samą rzeką, autorskie foodtrucki i weekendowa selekcja muzyczna.",
-        perk: "✦ Zniżka 15% na barze dla członków Lokooo"
-      },
-      {
-        tag: "WIDOK & SPACER",
-        title: "Bulwary Piastowskie",
-        desc: "Serce szczecińskiego wieczoru. Magiczny widok na oświetlone dźwigozaury i Odrę.",
-        perk: "✦ Dostęp do tajnych spotkań klubowych"
-      },
-      {
-        tag: "SPECIALTY COFFEE",
-        title: "Kawiarnia Specialty • Deptak",
-        desc: "Rzemieślnicze ziarna Single Origin, drip V60 i najlepsze świeże wypieki w centrum miasta.",
-        perk: "✦ Darmowe drugie espresso na powitanie"
-      }
-    ];
-
-    function selectVenue(index) {
-      const v = VENUES[index];
-      document.getElementById('venueTag').innerText = v.tag;
-      document.getElementById('venueTitle').innerText = v.title;
-      document.getElementById('venueDesc').innerText = v.desc;
-      document.getElementById('venuePerk').innerText = v.perk;
-
-      document.querySelectorAll('.map-hotspot').forEach((el, i) => {
-        if (i === index) el.classList.add('active');
-        else el.classList.remove('active');
+  function showResult(live) {
+    document.getElementById('result-title').textContent = live ? 'Zgłoszenie zarejestrowane.' : 'Tak zaczyna się Twoja historia.';
+    document.getElementById('result-copy').textContent = live
+      ? 'Zgłoszenie zarejestrowane w rejestrze Lokooo. Weryfikacja kapituły klubu w toku.'
+      : 'To podgląd interakcji. Formularz ma poprawny format, ale zgłoszenie nie zostało wysłane. Kod zaproszenia nie został zweryfikowany.';
+    form.hidden = true; result.hidden = false; result.focus({preventScroll:true});
+  }
+  function fieldError(field, message) {
+    error.textContent = message; field.setAttribute('aria-invalid', 'true'); field.focus();
+  }
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); if (busy) return;
+    error.textContent = ''; input.removeAttribute('aria-invalid'); consent.removeAttribute('aria-invalid');
+    const value = input.value.trim();
+    const emailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    const codeOK = /^(?=.*[A-Za-z])[A-Za-z0-9-]{6,40}$/.test(value);
+    if (!emailOK && !codeOK) return fieldError(input, 'Wpisz poprawny e-mail lub kod: 6–40 liter, cyfr i myślników.');
+    if (!consent.checked) return fieldError(consent, 'Potwierdź zapoznanie się z zasadami i informacją o prywatności.');
+    if (!isLive) { showResult(false); return; }
+    busy = true; submit.disabled = true; input.disabled = true; consent.disabled = true;
+    form.setAttribute('aria-busy', 'true'); submit.textContent = 'Wysyłanie…';
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const endpoint = new URL(CONFIG.applicationEndpoint, location.href);
+      if (endpoint.origin !== location.origin || endpoint.protocol !== 'https:') throw new Error('configuration');
+      const response = await fetch(endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin', signal: controller.signal,
+        body: JSON.stringify({ type: emailOK ? 'email' : 'invitation', value, privacyAcknowledged: true })
       });
+      if (!response.ok) throw new Error('response');
+      const data = await response.json();
+      if (data.accepted !== true) throw new Error('unconfirmed');
+      showResult(true);
+    } catch {
+      error.textContent = 'Nie otrzymaliśmy potwierdzenia zapisu. Sprawdź połączenie lub skontaktuj się z klubem.';
+    } finally {
+      clearTimeout(timeout); busy = false; submit.disabled = false; input.disabled = false; consent.disabled = false;
+      form.removeAttribute('aria-busy'); submit.textContent = 'Poproś o dostęp ↗';
     }
+  });
+  input.addEventListener('input', () => { error.textContent = ''; input.removeAttribute('aria-invalid'); });
+  consent.addEventListener('change', () => { error.textContent = ''; consent.removeAttribute('aria-invalid'); });
+  document.getElementById('reset-form').addEventListener('click', () => {
+    form.reset(); result.hidden = true; form.hidden = false; error.textContent = ''; input.focus();
+  });
 
-    // 4. Modale Prawne
-    const MODALS = {
-      privacy: {
-        title: "Polityka Prywatności (RODO / GDPR)",
-        content: `
-          <p><strong>Administrator Danych:</strong> Administratorem danych osobowych jest zespół Lokooo Syndicate (Szczecin, Polska). Kontakt: <em>syndicate@lokooo.club</em>.</p>
-          <p><strong>Cel przetwarzania:</strong> Twój adres e-mail zbierany jest wyłącznie w celu rezerwacji miejsca na liście oczekujących na zaproszenie do prywatnego syndykatu miejskiego Lokooo.</p>
-          <p><strong>Brak spamu i bezpieczeństwo:</strong> Nigdy nie odsprzedajemy danych podmiotom trzecim. Stosujemy pełne szyfrowanie SSL oraz certyfikowane procedury ochrony prywatności.</p>
-          <p><strong>Twoje prawa:</strong> W każdej chwili masz prawo do wglądu w swoje dane oraz natychmiastowego wycofania zgody i usunięcia adresu e-mail z listy.</p>
-        `
-      },
-      terms: {
-        title: "Regulamin Klubu Lokooo",
-        content: `
-          <p>1. <strong>Idea:</strong> Lokooo to autorska platforma miejska dedykowana odkrywaniu kultury, gastronomii i życia po zmroku w Szczecinie.</p>
-          <p>2. <strong>Zasada Invite-Only:</strong> Członkostwo przyznawane jest sukcesywnie na podstawie weryfikacji zaproszeń w poszczególnych turach.</p>
-          <p>3. <strong>Programy partnerskie:</strong> Oferty i przywileje handlowe realizowane są we współpracy z certyfikowanymi markami partnerskimi zgodnie z regulaminami poszczególnych programów.</p>
-        `
-      },
-      contact: {
-        title: "Kontakt",
-        content: `
-          <p><strong>LOKOOO SYNDICATE</strong></p>
-          <p>Szczecin, Polska</p>
-          <p>W sprawach naboru, partnerstw miejskich i pytań formalnych prosimy o kontakt:</p>
-          <p><strong style="color: #CDAD6A;">syndicate@lokooo.club</strong></p>
-        `
-      }
-    };
+  const places = {
+    odra: { kicker:'01 / AFTER DARK', name:'Hala Odra / Bulwary', description:'Wieczór nad wodą. Rozmowy, które nie kończą się z ostatnim światłem.', perk:'Prywatna rezerwacja i powitalny cocktail.' },
+    river: { kicker:'02 / WATERFRONT', name:'Bulwary Piastowskie', description:'Dźwigozaury na horyzoncie. Miejski rytuał pomiędzy architekturą a Odrą.', perk:'Kameralne spotkanie o zachodzie słońca.' },
+    coffee: { kicker:'03 / TASTE & SPECIALTY', name:'Deptak Bogusława', description:'Kawiarnia specialty. Spokojniejszy początek dnia, z dala od przypadkowych adresów.', perk:'Prywatna degustacja z opowieścią baristy.' }
+  };
+  const pins = [...document.querySelectorAll('[data-place]')];
+  const card = document.getElementById('place-card');
+  pins.forEach(pin => pin.addEventListener('click', () => {
+    const place = places[pin.dataset.place]; if (!place) return;
+    pins.forEach(other => other.setAttribute('aria-pressed', String(other === pin)));
+    activeAnimation?.cancel();
+    document.getElementById('place-kicker').textContent = place.kicker;
+    document.getElementById('place-name').textContent = place.name;
+    document.getElementById('place-description').textContent = place.description;
+    document.getElementById('place-perk').textContent = place.perk;
+    if (!reducedMotion.matches && card.animate) activeAnimation = card.animate([
+      { opacity:.35, transform:'translateY(8px)' }, { opacity:1, transform:'translateY(0)' }
+    ], { duration:320, easing:'cubic-bezier(.2,.7,.2,1)' });
+  }));
 
-    const modal = document.getElementById('legalModal');
-    function openModal(type) {
-      const data = MODALS[type];
-      if (!data) return;
-      document.getElementById('modalTitle').innerText = data.title;
-      document.getElementById('modalBody').innerHTML = data.content;
-      modal.showModal();
-    }
-    function closeModal() {
-      modal.close();
-    }
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.close();
+  const spotlight = document.getElementById('spotlight');
+  let lightFrame = 0, mouseX = -1000, mouseY = -1000;
+  window.addEventListener('pointermove', event => {
+    if (!finePointer.matches || reducedMotion.matches) return;
+    mouseX = event.clientX; mouseY = event.clientY;
+    if (lightFrame) return;
+    lightFrame = requestAnimationFrame(() => {
+      spotlight.style.transform = `translate(${mouseX - 325}px,${mouseY - 325}px)`; lightFrame = 0;
     });
-  </script>
+  }, {passive:true});
+  document.documentElement.addEventListener('pointerleave', () => {
+    cancelAnimationFrame(lightFrame); lightFrame = 0;
+    spotlight.style.transform = 'translate(-1000px,-1000px)';
+  });
+
+  const dialog = document.getElementById('legal-dialog');
+  let previousFocus = null;
+  document.querySelectorAll('[data-dialog]').forEach(button => button.addEventListener('click', () => {
+    const key = button.dataset.dialog;
+    const template = document.getElementById(`${key}-template`); if (!template) return;
+    previousFocus = button;
+    document.getElementById('legal-title').textContent = key === 'privacy'
+      ? 'Polityka Prywatności i Bezpieczeństwa Danych (RODO/GDPR)' : 'Regulamin Klubu Lokooo Syndicate';
+    document.getElementById('legal-content').replaceChildren(template.content.cloneNode(true));
+    dialog.showModal(); document.body.classList.add('locked'); dialog.querySelector('.close').focus();
+  }));
+  dialog.querySelector('.close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const box = dialog.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+  });
+  dialog.addEventListener('close', () => { document.body.classList.remove('locked'); previousFocus?.focus(); });
+
+  if ('IntersectionObserver' in window && !reducedMotion.matches) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+    }, {threshold:.08});
+    document.documentElement.classList.add('motion');
+    document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+  }
+})();
+</script>
 </body>
 </html>
