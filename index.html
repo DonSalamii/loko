@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loko Szczecin — Odkrywaj Miasto, Zbieraj Punkty i Nagrody</title>
+  <meta name="description" content="Loko to nowoczesna aplikacja miejska i program bywalca dla Szczecina. Skanuj paragony AI, odkrywaj lokale i odbieraj nagrody.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #04140E;
+      --surface-dark: #082017;
+      --surface-elevated: #0E2E22;
+      --border-gold: rgba(205, 173, 106, 0.28);
+      --gold-primary: #CDAD6A;
+      --gold-light: #E5C882;
+      --emerald: #34D399;
+      --text-main: #F6F3EB;
+      --text-muted: #96B0A3;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    header {
+      border-bottom: 1px solid var(--border-gold);
+      background: rgba(4, 20, 14, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #CDAD6A 0%, #997A38 100%);
+      color: #04140E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+    .logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+    }
+    .logo-city {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .cta-button {
+      background: linear-gradient(135deg, #CDAD6A 0%, #B8924A 100%);
+      color: #04140E;
+      text-decoration: none;
+      padding: 12px 26px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 18px rgba(205, 173, 106, 0.25);
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(205, 173, 106, 0.4);
+    }
+    .hero {
+      max-width: 1200px;
+      margin: 60px auto 40px auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(205, 173, 106, 0.12);
+      border: 1px solid var(--border-gold);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 24px;
+    }
+    .hero-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(36px, 6vw, 68px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #F6F3EB 0%, #CDAD6A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 36px auto;
+    }
+    .features-grid {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-gold);
+      border-radius: 24px;
+      padding: 32px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold-primary);
+    }
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .feature-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .partners-section {
+      background: var(--surface-dark);
+      border-top: 1px solid var(--border-gold);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .partners-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+    .partners-sub {
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+    .partners-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .partner-pill {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-gold);
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: var(--gold-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <div class="logo-box">
+        <div class="logo-badge">LK</div>
+        <div>
+          <div class="logo-text">LOKO</div>
+          <div class="logo-city">SZCZECIN • POLAND</div>
+        </div>
+      </div>
+      <a href="#join" class="cta-button">Pobierz Aplikację</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-pill">
+        <div class="hero-pill-dot"></div>
+        Aplikacja Miejska & Program Bywalca dla Szczecina
+      </div>
+      <h1>Wyjdź na miasto.<br><span>Zbieraj nagrody z paragonów.</span></h1>
+      <p class="hero-sub">
+        Loko łączy ponad 40 najlepszych szczecińskich restauracji, kawiarni specialty, pubów nad Odrą i scen kulturalnych. Skanuj paragony przez inteligentne AI, zdobywaj punkty i odbieraj cyfrowe benefity u globalnych partnerów.
+      </p>
+      <a href="#join" class="cta-button" style="font-size: 16px; padding: 16px 36px;">Dołącz do Bywalców Szczecina</a>
+    </section>
+
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📸</div>
+        <div class="feature-title">Skaner Paragonów AI</div>
+        <p class="feature-desc">
+          Zrób zdjęcie paragonu fiskalnego w dowolnym lokalu. Zaawansowane modele wizyjne w 1 sekundę weryfikują rachunek i natychmiast dopisują punkty do Twojego salda.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Żywe Tokeny 60s & Anti-Screenshot</div>
+        <p class="feature-desc">
+          Odbieraj darmowe pozycje przy barze za pomocą dynamicznie rotujących tokenów z żywym kompasem i zabezpieczeniem przed zrzutami ekranu.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎁</div>
+        <div class="feature-title">Cyfrowe Nagrody & Partnerstwa</div>
+        <p class="feature-desc">
+          Wymieniaj ogólne punkty Loko Concierge na darmowe subskrypcje BookBeat, zniżki na nocne powroty z Bolt/Uber, bilety do kina oraz rzemieślnicze specjały.
+        </p>
+      </div>
+    </section>
+
+    <section class="partners-section">
+      <h2 class="partners-title">Oficjalny Ekosystem Partnerski</h2>
+      <p class="partners-sub">Współpracujemy z wiodącymi markami cyfrowymi oraz szczecińską gastronomią</p>
+      <div class="partners-tags">
+        <div class="partner-pill">BookBeat Audiobooks</div>
+        <div class="partner-pill">Revolut Pay</div>
+        <div class="partner-pill">Bolt Chauffeur</div>
+        <div class="partner-pill">Wolt Food Delivery</div>
+        <div class="partner-pill">Empik Go</div>
+        <div class="partner-pill">Booksy Beauty & Barber</div>
+        <div class="partner-pill">Traficar Carsharing</div>
+        <div class="partner-pill">Kino Helios / Pionier 1907</div>
+        <div class="partner-pill">CityFit 24/7</div>
+        <div class="partner-pill">Canal+ Sport & Film</div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="join">
+    <div>
+      <strong>Loko Szczecin</strong> &copy; 2026. Wszelkie prawa zastrzeżone.<br>
+      Aplikacja mobilna dla mieszkańców i gości Szczecina.
+    </div>
+    <div class="footer-links">
+      <a href="#polityka">Polityka Prywatności</a>
+      <a href="#regulamin">Regulamin Programu</a>
+      <a href="#kontakt">Kontakt z Wydawcą</a>
+    </div>
+  </footer>
+
+</body>
+</html>
